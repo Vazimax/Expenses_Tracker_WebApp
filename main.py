@@ -41,4 +41,12 @@ with sl.form('entry_form', clear_on_submit=True):
 
     submitted = sl.form_submit_button('Save')
     if submitted:
-        period = str(sl.session_state['year']) + '-' + str(sl.session_state('month'))
+        period = str(sl.session_state['year']) + '-' + str(sl.session_state['month'])
+        incomes = {income: sl.session_state[income] for income in incomes}
+        expenses = {expense: sl.session_state[expense] for expense in expenses}
+
+        sl.write(f'incomes: {incomes}')
+        sl.write(f'expenses: {expenses}')
+        sl.success("It's Saved")
+
+
