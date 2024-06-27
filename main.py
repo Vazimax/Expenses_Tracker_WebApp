@@ -49,4 +49,39 @@ with sl.form('entry_form', clear_on_submit=True):
         sl.write(f'expenses: {expenses}')
         sl.success("It's Saved")
 
+sl.header('Visualization')
+with sl.form('saved_periods'):
+    period = sl.selectbox('Period', ['2024-June'])
+    submitted = sl.form_submit_button('Plot Period')
+    if submitted:
+        comment = '...'
+        incomes = {'Salary': 980}
+        expenses = {'Rent': 280, 'Food': 130}
+
+        total_income = sum(incomes.values())
+        total_expenses = sum(expenses.values())
+        remaining = total_income - total_expenses
+        col1, col2, col3 = sl.columns(3)
+        col1.metric('Total Income', f"{total_income}{currency}")
+        col1.metric('Total Expenses', f"{total_expenses}{currency}")
+        col1.metric('Remaining', f"{remaining}{currency}")
+        sl.text(f"Comment: {comment}")
+
+        label = list(incomes.keys()) + ["Total Income"] + list(expenses.keys())
+        source = list(range(len(incomes))) + [len(incomes)] * len(expenses)
+        target = [len(incomes)] * len(incomes) + [label.index(expense) for expense in expenses.keys()]
+        value = list(incomes.values()) + list(expenses.values())
+
+
+        link = dict(source=source, target=target, value=value)
+        node = dict(label=label, pad=20, thickness=30, color="#E694FF")
+        data = go.Sankey(link=link, node=node)
+
+
+        fig = go.Figure(data)
+        fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
+        sl.plotly_chart(fig, use_container_width=True)
+
+
+
 
